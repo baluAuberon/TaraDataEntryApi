@@ -409,8 +409,8 @@ namespace TaraDataEntryApi.Api.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "67ecdfe7-8d0b-48e9-b622-5735f6457f99", "95e3cab0-feb5-4bfa-ab00-700f9176ea1b", "Reader", "READER" },
-                    { "fe25fc79-22dc-4b15-9427-44a831c66869", "6649899a-3c06-4774-9e31-f5c98c5641c2", "Writer", "WRITER" }
+                    { "62fc0729-1f98-40c4-ac3e-8bab0a714aa3", "95e3cab0-feb5-4bfa-ab00-700f9176ea1b", "Reader", "READER" },
+                    { "a3aefe29-28a8-4308-9247-7ab16938e085", "6649899a-3c06-4774-9e31-f5c98c5641c2", "Writer", "WRITER" }
                 });
 
             migrationBuilder.CreateIndex(
