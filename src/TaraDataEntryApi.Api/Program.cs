@@ -16,9 +16,9 @@ using TARA.DATAENTRY.API.Repository;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+var assemblyName = typeof(Program).Assembly.GetName().Name;
 builder.Services.AddDbContext<TARAAuthDbContext>(options =>
-options.UseNpgsql(builder.Configuration.GetConnectionString("TARAAuthConnection")));
+options.UseNpgsql(builder.Configuration.GetConnectionString("TARAAuthConnection"), m => m.MigrationsAssembly(assemblyName)));
 
 builder.Services.AddIdentityCore<AppUser>()
     .AddRoles<IdentityRole>()
@@ -116,6 +116,12 @@ builder.Services.AddApiVersioning(options =>
     });
 builder.Services.AddMvc();
 var app = builder.Build();
+using var scope = app.Services.CreateScope();
+var context = scope.ServiceProvider.GetRequiredService<TARAAuthDbContext>();
+if (context.Database.GetPendingMigrations().Any())
+{
+    await context.Database.MigrateAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
