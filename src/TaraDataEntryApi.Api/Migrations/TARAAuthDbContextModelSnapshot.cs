@@ -8,7 +8,7 @@ using TARA.DATAENTRY.API.Data;
 
 #nullable disable
 
-namespace TARA.DATAENTRY.API.Migrations
+namespace TaraDataEntryApi.Api.Migrations
 {
     [DbContext(typeof(TARAAuthDbContext))]
     partial class TARAAuthDbContextModelSnapshot : ModelSnapshot
@@ -50,14 +50,14 @@ namespace TARA.DATAENTRY.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f3da39b7-e751-48cf-a4b4-105f487b63b4",
+                            Id = "67ecdfe7-8d0b-48e9-b622-5735f6457f99",
                             ConcurrencyStamp = "95e3cab0-feb5-4bfa-ab00-700f9176ea1b",
                             Name = "Reader",
                             NormalizedName = "READER"
                         },
                         new
                         {
-                            Id = "bb88bfb7-4b6a-4d2f-952e-cc83b79d130a",
+                            Id = "fe25fc79-22dc-4b15-9427-44a831c66869",
                             ConcurrencyStamp = "6649899a-3c06-4774-9e31-f5c98c5641c2",
                             Name = "Writer",
                             NormalizedName = "WRITER"

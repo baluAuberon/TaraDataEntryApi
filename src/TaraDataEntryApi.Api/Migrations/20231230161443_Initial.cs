@@ -6,10 +6,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace TARA.DATAENTRY.API.Migrations
+namespace TaraDataEntryApi.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class MasterDataModelCreation : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -56,29 +56,72 @@ namespace TARA.DATAENTRY.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Classes",
+                name: "Class",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ClassName = table.Column<string>(type: "text", nullable: false)
+                    ClassName = table.Column<string>(type: "text", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Classes", x => x.Id);
+                    table.PrimaryKey("PK_Class", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Subjects",
+                name: "Image",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    SubjectName = table.Column<string>(type: "text", nullable: false)
+                    ImagePath = table.Column<string>(type: "text", nullable: false),
+                    ImageTypeID = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Subjects", x => x.Id);
+                    table.PrimaryKey("PK_Image", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Skill",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    SkillName = table.Column<string>(type: "text", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Skill", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tag",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TagName = table.Column<string>(type: "text", nullable: false),
+                    TagId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tag", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -188,93 +231,175 @@ namespace TARA.DATAENTRY.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ClassSubjects",
+                name: "Subject",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    SubjectName = table.Column<string>(type: "text", nullable: false),
                     ClassId = table.Column<int>(type: "integer", nullable: false),
-                    SubjectId = table.Column<int>(type: "integer", nullable: false)
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ClassSubjects", x => x.Id);
+                    table.PrimaryKey("PK_Subject", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ClassSubjects_Classes_ClassId",
+                        name: "FK_Subject_Class_ClassId",
                         column: x => x.ClassId,
-                        principalTable: "Classes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ClassSubjects_Subjects_SubjectId",
-                        column: x => x.SubjectId,
-                        principalTable: "Subjects",
+                        principalTable: "Class",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Lessons",
+                name: "Lesson",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     LessonName = table.Column<string>(type: "text", nullable: false),
-                    SubjectId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Lessons", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Lessons_Subjects_SubjectId",
-                        column: x => x.SubjectId,
-                        principalTable: "Subjects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SubjectLessons",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     SubjectId = table.Column<int>(type: "integer", nullable: false),
-                    LessonId = table.Column<int>(type: "integer", nullable: false)
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SubjectLessons", x => x.Id);
+                    table.PrimaryKey("PK_Lesson", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SubjectLessons_Lessons_LessonId",
-                        column: x => x.LessonId,
-                        principalTable: "Lessons",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_SubjectLessons_Subjects_SubjectId",
+                        name: "FK_Lesson_Subject_SubjectId",
                         column: x => x.SubjectId,
-                        principalTable: "Subjects",
+                        principalTable: "Subject",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Topics",
+                name: "Topic",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     TopicName = table.Column<string>(type: "text", nullable: false),
-                    LessonId = table.Column<int>(type: "integer", nullable: false)
+                    LessonID = table.Column<int>(type: "integer", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Topics", x => x.Id);
+                    table.PrimaryKey("PK_Topic", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Topics_Lessons_LessonId",
+                        name: "FK_Topic_Lesson_LessonID",
+                        column: x => x.LessonID,
+                        principalTable: "Lesson",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QuestionCapturing",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ClassId = table.Column<int>(type: "integer", nullable: false),
+                    SubjectId = table.Column<int>(type: "integer", nullable: false),
+                    LessonId = table.Column<int>(type: "integer", nullable: false),
+                    TopicId = table.Column<int>(type: "integer", nullable: false),
+                    QuestionTypeId = table.Column<int>(type: "integer", nullable: false),
+                    IsVerified = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QuestionCapturing", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_QuestionCapturing_Class_ClassId",
+                        column: x => x.ClassId,
+                        principalTable: "Class",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_QuestionCapturing_Lesson_LessonId",
                         column: x => x.LessonId,
-                        principalTable: "Lessons",
+                        principalTable: "Lesson",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_QuestionCapturing_Subject_SubjectId",
+                        column: x => x.SubjectId,
+                        principalTable: "Subject",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_QuestionCapturing_Topic_TopicId",
+                        column: x => x.TopicId,
+                        principalTable: "Topic",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MCQOption",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    OptionName = table.Column<string>(type: "text", nullable: false),
+                    QuestionCapturingId = table.Column<int>(type: "integer", nullable: false),
+                    IsAnswer = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MCQOption", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MCQOption_QuestionCapturing_QuestionCapturingId",
+                        column: x => x.QuestionCapturingId,
+                        principalTable: "QuestionCapturing",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QuestionImage",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    QuestionCapturingId = table.Column<int>(type: "integer", nullable: false),
+                    ImageId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QuestionImage", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_QuestionImage_Image_ImageId",
+                        column: x => x.ImageId,
+                        principalTable: "Image",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_QuestionImage_QuestionCapturing_QuestionCapturingId",
+                        column: x => x.QuestionCapturingId,
+                        principalTable: "QuestionCapturing",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -284,8 +409,8 @@ namespace TARA.DATAENTRY.API.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "57a55308-5840-42c6-b67d-85d29afaacc2", "6649899a-3c06-4774-9e31-f5c98c5641c2", "Writer", "WRITER" },
-                    { "9cb9e1bc-ce72-4b45-ab34-fb671d4cb3b5", "95e3cab0-feb5-4bfa-ab00-700f9176ea1b", "Reader", "READER" }
+                    { "67ecdfe7-8d0b-48e9-b622-5735f6457f99", "95e3cab0-feb5-4bfa-ab00-700f9176ea1b", "Reader", "READER" },
+                    { "fe25fc79-22dc-4b15-9427-44a831c66869", "6649899a-3c06-4774-9e31-f5c98c5641c2", "Writer", "WRITER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -326,34 +451,54 @@ namespace TARA.DATAENTRY.API.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClassSubjects_ClassId",
-                table: "ClassSubjects",
+                name: "IX_Lesson_SubjectId",
+                table: "Lesson",
+                column: "SubjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MCQOption_QuestionCapturingId",
+                table: "MCQOption",
+                column: "QuestionCapturingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QuestionCapturing_ClassId",
+                table: "QuestionCapturing",
                 column: "ClassId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClassSubjects_SubjectId",
-                table: "ClassSubjects",
-                column: "SubjectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Lessons_SubjectId",
-                table: "Lessons",
-                column: "SubjectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SubjectLessons_LessonId",
-                table: "SubjectLessons",
+                name: "IX_QuestionCapturing_LessonId",
+                table: "QuestionCapturing",
                 column: "LessonId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SubjectLessons_SubjectId",
-                table: "SubjectLessons",
+                name: "IX_QuestionCapturing_SubjectId",
+                table: "QuestionCapturing",
                 column: "SubjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Topics_LessonId",
-                table: "Topics",
-                column: "LessonId");
+                name: "IX_QuestionCapturing_TopicId",
+                table: "QuestionCapturing",
+                column: "TopicId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QuestionImage_ImageId",
+                table: "QuestionImage",
+                column: "ImageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QuestionImage_QuestionCapturingId",
+                table: "QuestionImage",
+                column: "QuestionCapturingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subject_ClassId",
+                table: "Subject",
+                column: "ClassId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Topic_LessonID",
+                table: "Topic",
+                column: "LessonID");
         }
 
         /// <inheritdoc />
@@ -375,13 +520,16 @@ namespace TARA.DATAENTRY.API.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ClassSubjects");
+                name: "MCQOption");
 
             migrationBuilder.DropTable(
-                name: "SubjectLessons");
+                name: "QuestionImage");
 
             migrationBuilder.DropTable(
-                name: "Topics");
+                name: "Skill");
+
+            migrationBuilder.DropTable(
+                name: "Tag");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -390,13 +538,22 @@ namespace TARA.DATAENTRY.API.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Classes");
+                name: "Image");
 
             migrationBuilder.DropTable(
-                name: "Lessons");
+                name: "QuestionCapturing");
 
             migrationBuilder.DropTable(
-                name: "Subjects");
+                name: "Topic");
+
+            migrationBuilder.DropTable(
+                name: "Lesson");
+
+            migrationBuilder.DropTable(
+                name: "Subject");
+
+            migrationBuilder.DropTable(
+                name: "Class");
         }
     }
 }

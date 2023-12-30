@@ -9,11 +9,11 @@ using TARA.DATAENTRY.API.Data;
 
 #nullable disable
 
-namespace TARA.DATAENTRY.API.Migrations
+namespace TaraDataEntryApi.Api.Migrations
 {
     [DbContext(typeof(TARAAuthDbContext))]
-    [Migration("20231226070831_UpdateModel11")]
-    partial class UpdateModel11
+    [Migration("20231230161443_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,14 +53,14 @@ namespace TARA.DATAENTRY.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "71bc3bd2-ad94-4646-8272-c7aff7a9543d",
+                            Id = "67ecdfe7-8d0b-48e9-b622-5735f6457f99",
                             ConcurrencyStamp = "95e3cab0-feb5-4bfa-ab00-700f9176ea1b",
                             Name = "Reader",
                             NormalizedName = "READER"
                         },
                         new
                         {
-                            Id = "728d518d-52b9-4c98-a55a-9210a277668e",
+                            Id = "fe25fc79-22dc-4b15-9427-44a831c66869",
                             ConcurrencyStamp = "6649899a-3c06-4774-9e31-f5c98c5641c2",
                             Name = "Writer",
                             NormalizedName = "WRITER"
@@ -289,18 +289,10 @@ namespace TARA.DATAENTRY.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("ImageType")
-                        .HasColumnType("integer");
-
                     b.Property<int>("ImageTypeID")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("QuestionCapturingId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("QuestionCapturingId");
 
                     b.ToTable("Image", (string)null);
                 });
@@ -405,19 +397,16 @@ namespace TARA.DATAENTRY.API.Migrations
                     b.Property<bool>("IsVerified")
                         .HasColumnType("boolean");
 
+                    b.Property<int>("LessonId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("QuestionImageId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("QuestionTypeId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SkillId")
                         .HasColumnType("integer");
 
                     b.Property<int>("SubjectId")
@@ -430,9 +419,7 @@ namespace TARA.DATAENTRY.API.Migrations
 
                     b.HasIndex("ClassId");
 
-                    b.HasIndex("QuestionTypeId");
-
-                    b.HasIndex("SkillId");
+                    b.HasIndex("LessonId");
 
                     b.HasIndex("SubjectId");
 
@@ -452,49 +439,16 @@ namespace TARA.DATAENTRY.API.Migrations
                     b.Property<int>("ImageId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("QuestionId")
+                    b.Property<int>("QuestionCapturingId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ImageId");
 
-                    b.HasIndex("QuestionId")
-                        .IsUnique();
+                    b.HasIndex("QuestionCapturingId");
 
                     b.ToTable("QuestionImage", (string)null);
-                });
-
-            modelBuilder.Entity("TARA.DATAENTRY.API.Data.QuestionType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("TypeName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("QuestionType", (string)null);
                 });
 
             modelBuilder.Entity("TARA.DATAENTRY.API.Data.Skill", b =>
@@ -589,9 +543,6 @@ namespace TARA.DATAENTRY.API.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("QuestionCapturingId")
-                        .HasColumnType("integer");
-
                     b.Property<Guid?>("TagId")
                         .HasColumnType("uuid");
 
@@ -600,8 +551,6 @@ namespace TARA.DATAENTRY.API.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("QuestionCapturingId");
 
                     b.ToTable("Tag", (string)null);
                 });
@@ -694,13 +643,6 @@ namespace TARA.DATAENTRY.API.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TARA.DATAENTRY.API.Data.Image", b =>
-                {
-                    b.HasOne("TARA.DATAENTRY.API.Data.QuestionCapturing", null)
-                        .WithMany("AdditionalImages")
-                        .HasForeignKey("QuestionCapturingId");
-                });
-
             modelBuilder.Entity("TARA.DATAENTRY.API.Data.Lesson", b =>
                 {
                     b.HasOne("TARA.DATAENTRY.API.Data.Subject", "Subject")
@@ -715,7 +657,7 @@ namespace TARA.DATAENTRY.API.Migrations
             modelBuilder.Entity("TARA.DATAENTRY.API.Data.MCQOption", b =>
                 {
                     b.HasOne("TARA.DATAENTRY.API.Data.QuestionCapturing", "QuestionCapturing")
-                        .WithMany("Options")
+                        .WithMany()
                         .HasForeignKey("QuestionCapturingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -731,15 +673,9 @@ namespace TARA.DATAENTRY.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TARA.DATAENTRY.API.Data.QuestionType", "QuestionType")
+                    b.HasOne("TARA.DATAENTRY.API.Data.Lesson", "Lesson")
                         .WithMany()
-                        .HasForeignKey("QuestionTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TARA.DATAENTRY.API.Data.Skill", "Skill")
-                        .WithMany()
-                        .HasForeignKey("SkillId")
+                        .HasForeignKey("LessonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -757,9 +693,7 @@ namespace TARA.DATAENTRY.API.Migrations
 
                     b.Navigation("Class");
 
-                    b.Navigation("QuestionType");
-
-                    b.Navigation("Skill");
+                    b.Navigation("Lesson");
 
                     b.Navigation("Subject");
 
@@ -769,20 +703,20 @@ namespace TARA.DATAENTRY.API.Migrations
             modelBuilder.Entity("TARA.DATAENTRY.API.Data.QuestionImage", b =>
                 {
                     b.HasOne("TARA.DATAENTRY.API.Data.Image", "Image")
-                        .WithMany()
+                        .WithMany("QuestionImages")
                         .HasForeignKey("ImageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TARA.DATAENTRY.API.Data.QuestionCapturing", "Question")
-                        .WithOne("QuestionImage")
-                        .HasForeignKey("TARA.DATAENTRY.API.Data.QuestionImage", "QuestionId")
+                    b.HasOne("TARA.DATAENTRY.API.Data.QuestionCapturing", "QuestionCapturing")
+                        .WithMany("QuestionImages")
+                        .HasForeignKey("QuestionCapturingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Image");
 
-                    b.Navigation("Question");
+                    b.Navigation("QuestionCapturing");
                 });
 
             modelBuilder.Entity("TARA.DATAENTRY.API.Data.Subject", b =>
@@ -794,13 +728,6 @@ namespace TARA.DATAENTRY.API.Migrations
                         .IsRequired();
 
                     b.Navigation("Class");
-                });
-
-            modelBuilder.Entity("TARA.DATAENTRY.API.Data.Tag", b =>
-                {
-                    b.HasOne("TARA.DATAENTRY.API.Data.QuestionCapturing", null)
-                        .WithMany("Tags")
-                        .HasForeignKey("QuestionCapturingId");
                 });
 
             modelBuilder.Entity("TARA.DATAENTRY.API.Data.Topic", b =>
@@ -819,6 +746,11 @@ namespace TARA.DATAENTRY.API.Migrations
                     b.Navigation("Subjects");
                 });
 
+            modelBuilder.Entity("TARA.DATAENTRY.API.Data.Image", b =>
+                {
+                    b.Navigation("QuestionImages");
+                });
+
             modelBuilder.Entity("TARA.DATAENTRY.API.Data.Lesson", b =>
                 {
                     b.Navigation("Topics");
@@ -826,14 +758,7 @@ namespace TARA.DATAENTRY.API.Migrations
 
             modelBuilder.Entity("TARA.DATAENTRY.API.Data.QuestionCapturing", b =>
                 {
-                    b.Navigation("AdditionalImages");
-
-                    b.Navigation("Options");
-
-                    b.Navigation("QuestionImage")
-                        .IsRequired();
-
-                    b.Navigation("Tags");
+                    b.Navigation("QuestionImages");
                 });
 
             modelBuilder.Entity("TARA.DATAENTRY.API.Data.Subject", b =>
