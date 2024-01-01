@@ -50,14 +50,14 @@ namespace TaraDataEntryApi.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "62fc0729-1f98-40c4-ac3e-8bab0a714aa3",
+                            Id = "d33ad83d-6f15-4418-8e90-fd8a0ebdb289",
                             ConcurrencyStamp = "95e3cab0-feb5-4bfa-ab00-700f9176ea1b",
                             Name = "Reader",
                             NormalizedName = "READER"
                         },
                         new
                         {
-                            Id = "a3aefe29-28a8-4308-9247-7ab16938e085",
+                            Id = "2baf4b29-0249-4724-b53e-dab32a7504fa",
                             ConcurrencyStamp = "6649899a-3c06-4774-9e31-f5c98c5641c2",
                             Name = "Writer",
                             NormalizedName = "WRITER"
